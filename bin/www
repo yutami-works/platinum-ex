@@ -6,7 +6,7 @@
 
 const app = require('../app');
 const debug = require('debug')('platinum-ex:server');
-var http = require('http');
+const http = require('http');
 
 /**
  * Get port from environment and store in Express.

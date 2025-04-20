@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>更新</title>
+</head>
+  <h1><%= partner.name %> さんの情報を編集</h1>
+
+  <form action="/partners/edit/<%= partner.hash %>" method="POST">
+    <label>名前: <input type="text" name="name" value="<%= partner.name %>"></label><br>
+    <label>身長: <input type="text" name="tall" value="<%= partner.tall %>"></label><br>
+    <label>体型: <input type="text" name="figure" value="<%= partner.figure %>"></label><br>
+    <label>職業: <input type="text" name="job" value="<%= partner.job %>"></label><br>
+    <label>出身: <input type="text" name="from" value="<%= partner.from %>"></label><br>
+    <label>居住地: <input type="text" name="live" value="<%= partner.live %>"></label><br>
+    <label>ステータス: <input type="text" name="status" value="<%= partner.status %>"></label><br>
+
+    <h3>画像情報</h3>
+    <div id="image-fields">
+      <% image?.images.forEach((img, i) => { %>
+        <div class="image-group">
+          <label>Raw: <input type="text" name="images[<%= i %>][raw]" value="<%= img.raw %>" size="100"></label><br>
+          <label>Original: <input type="text" name="images[<%= i %>][original]" value="<%= img.original %>" size="100"></label><br>
+          <label>Resize: <input type="text" name="images[<%= i %>][resize]" value="<%= img.resize %>" size="100"></label><br><br>
+        </div>
+      <% }) %>
+    </div>
+
+    <button type="button" onclick="addImageRow()">＋ 画像を追加</button>
+    <button type="submit">保存</button>
+  </form>
+  <script>
+    let imageIndex = <%= image?.images.length || 0 %>;
+
+    function addImageRow() {
+      const container = document.getElementById('image-fields');
+
+      const div = document.createElement('div');
+      div.className = 'image-group';
+      div.innerHTML = `
+        <label>Raw: <input type="text" name="images[${imageIndex}][raw]" size="100"></label><br>
+        <label>Original: <input type="text" name="images[${imageIndex}][original]" size="100"></label><br>
+        <label>Resize: <input type="text" name="images[${imageIndex}][resize]" size="100"></label><br><br>
+      `;
+
+      container.appendChild(div);
+      imageIndex++;
+    }
+  </script>
+</body>
+</html>

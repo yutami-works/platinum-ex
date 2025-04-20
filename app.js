@@ -1,13 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// base
+const createError = require('http-errors');
+const express = require('express');
+const path = require('node:path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// custom
+const dotenv = require('dotenv');
+dotenv.config(); // 先に読み込む
 
-var app = express();
+// DB接続
+require('./utils/db');
+
+// routers読み込み
+const indexRouter = require('./routes/index');
+const partnersRouter = require('./routes/partners');
+const registerRouter = require('./routes/register');
+
+// expressインスタンス化
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -15,12 +26,14 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true })); // formの文字列を配列にするためにtrueにしている
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ルーティング設定
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/partners', partnersRouter);
+app.use('/register', registerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

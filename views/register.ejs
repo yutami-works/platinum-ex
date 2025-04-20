@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>新規登録</title>
+</head>
+<body>
+  <h1>ペア＋画像 登録フォーム</h1>
+  <form method="POST" action="/register">
+    <label>Hash:</label><br/>
+    <input type="text" name="hash" required><br/><br/>
+
+    <label>Name:</label><br/>
+    <input type="text" name="name"><br/><br/>
+
+    <label>身長:</label><br/>
+    <input type="text" name="tall"><br/><br/>
+
+    <label>体型:</label><br/>
+    <input type="text" name="figure"><br/><br/>
+
+    <label>Job:</label><br/>
+    <input type="text" name="job"><br/><br/>
+
+    <label>From:</label><br/>
+    <input type="text" name="from"><br/><br/>
+
+    <label>Live:</label><br/>
+    <input type="text" name="live"><br/><br/>
+
+    <label>Status:</label><br/>
+    <input type="text" name="status"><br/><br/>
+
+    <h3>画像URL</h3>
+    <div id="imageFields">
+      <div>
+        <label>Raw:</label>
+        <input type="text" name="rawImages" />
+        <label>Original:</label>
+        <input type="text" name="originalImages" />
+        <label>Resize:</label>
+        <input type="text" name="resizeImages" />
+      </div>
+    </div>
+
+    <button type="button" onclick="addImageField()">画像追加</button><br/><br/>
+    <button type="submit">登録</button>
+  </form>
+
+  <script>
+    function addImageField() {
+      const container = document.getElementById('imageFields');
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <label>Raw:</label>
+        <input type="text" name="rawImages" />
+        <label>Original:</label>
+        <input type="text" name="originalImages" />
+        <label>Resize:</label>
+        <input type="text" name="resizeImages" />
+      `;
+      container.appendChild(div);
+    }
+  </script>
+</body>
+</html>

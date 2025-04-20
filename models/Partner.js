@@ -1,0 +1,14 @@
+const mongoose = require('mongoose');
+
+const partnerSchema = new mongoose.Schema({
+  hash: { type: String, required: true },
+  name: String,
+  tall: String,
+  figure: String,
+  job: String,
+  from: String,
+  live: String,
+  status: String
+}, { collection: 'partners' });
+
+module.exports = mongoose.model('Partner', partnerSchema);
