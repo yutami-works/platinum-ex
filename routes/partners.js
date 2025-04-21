@@ -29,8 +29,14 @@ router.get('/', async (req, res) => {
     const partners = await Promise.all(
       partnersBaseData.map(async (partner) => {
         const image = await Image.findOne({ hash: partner.hash });
+        let age = '??';
+        if (partner.birth) {
+          age = calculateAge(partner.birth);
+        }
+        const headerName = `${partner.name}(${age})`;
         return {
           ...partner.toObject(),
+          headerName: headerName,
           images: image.images,
           link: process.env.PARTNER_URL + partner.hash,
           modal: `modal-${partner.hash}`,
@@ -65,6 +71,7 @@ router.post('/edit/:hash', async (req, res) => {
   await Partner.updateOne({ hash }, {
     $set: {
       name: req.body.name,
+      birth: req.body.birth,
       tall: req.body.tall,
       figure: req.body.figure,
       job: req.body.job,
@@ -76,9 +83,7 @@ router.post('/edit/:hash', async (req, res) => {
 
   // Imageの更新（完全置換）
   if (req.body.images && Array.isArray(req.body.images)) {
-    await Image.updateOne(
-      { hash },
-      {
+    await Image.updateOne({ hash }, {
         $set: {
           images: req.body.images.map(img => ({
             raw: img.raw,

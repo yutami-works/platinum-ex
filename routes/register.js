@@ -64,11 +64,11 @@ router.get('/', (req, res) => {
 
 // 登録処理
 router.post('/', async (req, res) => {
-  const { hash, name, tall, figure, job, from, live, status, rawImages, originalImages, resizeImages } = req.body;
+  const { hash, name, birth, tall, figure, job, from, live, status, rawImages, originalImages, resizeImages } = req.body;
 
   try {
     // Partner 登録
-    const newPartner = new Partner({ hash, name, tall, figure, job, from, live, status });
+    const newPartner = new Partner({ hash, name, birth, tall, figure, job, from, live, status });
     await newPartner.save();
 
     // 画像をまとめて処理
