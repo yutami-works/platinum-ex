@@ -13,7 +13,7 @@ const uploadBufferToH3zjp = async (buffer, filename = 'upload.jpg') => {
   const formData = new FormData();
   formData.append('files', buffer, { filename });
 
-  const res = await axios.post('https://hm-nrm.h3z.jp/uploader/work.php', formData, {
+  const res = await axios.post(process.env.UPLOADER_URL, formData, {
     headers: formData.getHeaders(),
     maxContentLength: Infinity,
     maxBodyLength: Infinity
