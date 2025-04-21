@@ -13,7 +13,7 @@ const uploadBufferToH3zjp = async (buffer, filename = 'upload.jpg') => {
   const formData = new FormData();
   formData.append('files', buffer, { filename });
 
-  const res = await axios.post(process.env.UPLOADER_URL, formData, {
+  const res = await axios.post('https://hm-nrm.h3z.jp/uploader/work.php', formData, {
     headers: formData.getHeaders(),
     maxContentLength: Infinity,
     maxBodyLength: Infinity
@@ -54,6 +54,7 @@ const resizeToAspect = async (inputBuffer) => {
     })
     .toBuffer();
 
+  console.log('リサイズ');
   return outputBuffer;
 };
 
@@ -67,11 +68,8 @@ router.post('/', async (req, res) => {
   const { hash, name, birth, tall, figure, job, from, live, status, rawImages, originalImages, resizeImages } = req.body;
 
   try {
-    // Partner 登録
-    const newPartner = new Partner({ hash, name, birth, tall, figure, job, from, live, status });
-    await newPartner.save();
-
     // 画像をまとめて処理
+    /* 429になるので対策考える
     const processedImages = await Promise.all(rawImages.map(async (raw, i) => {
       const original = originalImages[i];
       const resize = resizeImages[i];
@@ -95,8 +93,41 @@ router.post('/', async (req, res) => {
 
       return { raw, original: originalUrl, resize: resizeUrl };
     }));
+    */
 
+    // 画像アップロード
+    const processedImages = [];
+    for (let i = 0; i < rawImages.length; i++) {
+      const raw = rawImages[i];
+      const original = originalImages[i];
+      const resize = resizeImages[i];
+
+      let originalUrl = original;
+      let resizeUrl = resize;
+
+      // original が空なら raw をアップロード
+      if (!originalUrl) {
+        const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
+        originalUrl = await uploadBufferToH3zjp(Buffer.from(data), `original_${i}.jpg`);
+      }
+
+      // resize が空なら raw をリサイズ→アップロード
+      if (!resizeUrl) {
+        const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
+        const resizedBuffer = await resizeToAspect(Buffer.from(data));
+        resizeUrl = await uploadBufferToH3zjp(resizedBuffer, `resize_${i}.jpg`);
+      }
+
+      processedImages.push({ raw, original: originalUrl, resize: resizeUrl });
+    }
+
+    console.log('images登録');
     await new Image({ hash, images: processedImages }).save();
+
+    // Partner 登録
+    console.log('partners登録');
+    const newPartner = new Partner({ hash, name, birth, tall, figure, job, from, live, status });
+    await newPartner.save();
 
     res.redirect('/register'); // 完了後の遷移先
   } catch (error) {
