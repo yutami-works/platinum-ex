@@ -27,18 +27,40 @@ router.get('/', async (req, res) => {
     // partnersを全取得
     const partnersBaseData = await Partner.find({});
 
-    // hashを基にimagesデータを取得
+    // 個別情報加工
     const partners = await Promise.all(
       partnersBaseData.map(async (partner) => {
+        // hashを基にimagesデータを取得
         const image = await Image.findOne({ hash: partner.hash });
+
+        // 年齢計算
         let age = '??';
         if (partner.birth) {
           age = calculateAge(partner.birth);
         }
         const headerName = `${partner.name}(${age})`;
+
+        // 状態定義
+        let state = '不明';
+        if (partner.connect == '2') {
+          state = '契約済み';
+        } else if (partner.connect == '1') {
+          state = '契約準備';
+        } else {
+          state = '待機中';
+        }
+
+        // 追加情報
+        if (partner.delete == '2') {
+          state = `${state}（解約不可）`;
+        } else if (partner.delete == '1') {
+          state = `${state}（予約不可）`;
+        }
+
         return {
           ...partner.toObject(),
           headerName: headerName,
+          status: state,
           images: image.images,
           link: process.env.PARTNER_URL + partner.hash,
           modal: `modal-${partner.hash}`,
@@ -79,7 +101,8 @@ router.post('/edit/:hash', async (req, res) => {
       job: req.body.job,
       from: req.body.from,
       live: req.body.live,
-      status: req.body.status,
+      connect: req.body.connect,
+      delete: req.body.delete
     }
   });
 

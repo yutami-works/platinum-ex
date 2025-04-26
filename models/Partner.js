@@ -9,7 +9,8 @@ const partnerSchema = new mongoose.Schema({
   job: String,
   from: String,
   live: String,
-  status: String
+  connect: String,
+  delete: String
 }, { collection: 'partners' });
 
 module.exports = mongoose.model('Partner', partnerSchema);
