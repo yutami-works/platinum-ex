@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { imageUrl73rror, imageUrl73rror34 } = require('../utils/mirror73');
+const { checkRawOrgRszImages } = require('../utils/kyo2');
 
 const Partner = require('../models/Partner');
 const Image = require('../models/Image');
@@ -17,30 +17,10 @@ router.post('/', async (req, res) => {
 
   try {
     // 画像アップロード
-    const processedImages = [];
-    for (let i = 0; i < rawImages.length; i++) {
-      const raw = rawImages[i];
-      const original = originalImages[i];
-      const resize = resizeImages[i];
-
-      let originalUrl = original;
-      let resizeUrl = resize;
-
-      // original が空なら raw をアップロード
-      if (!originalUrl) {
-        originalUrl = await imageUrl73rror(raw);
-      }
-
-      // resize が空なら raw をリサイズ→アップロード
-      if (!resizeUrl) {
-        resizeUrl = await imageUrl73rror34(raw)
-      }
-
-      processedImages.push({ raw, original: originalUrl, resize: resizeUrl });
-    }
+    const rawOrgRszImages = await checkRawOrgRszImages(rawImages, originalImages, resizeImages);
 
     console.log('images登録');
-    await new Image({ hash, images: processedImages }).save();
+    await new Image({ hash, images: rawOrgRszImages }).save();
 
     // Partner 登録
     console.log('partners登録');
