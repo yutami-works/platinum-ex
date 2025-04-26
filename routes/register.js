@@ -5,6 +5,8 @@ const axios = require('axios');
 const sharp = require('sharp');
 const FormData = require('form-data');
 
+const { uploadBuffer73 } = require('../utils/73uploader')
+
 const Partner = require('../models/Partner');
 const Image = require('../models/Image');
 
@@ -117,14 +119,14 @@ router.post('/', async (req, res) => {
       // original が空なら raw をアップロード
       if (!originalUrl) {
         const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
-        originalUrl = await uploadBufferToH3zjp(Buffer.from(data), `original_${i}.jpg`, raw);
+        originalUrl = await uploadBuffer73(Buffer.from(data), `original_${i}.jpg`, raw);
       }
 
       // resize が空なら raw をリサイズ→アップロード
       if (!resizeUrl) {
         const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
         const resizedBuffer = await resizeToAspect(Buffer.from(data));
-        resizeUrl = await uploadBufferToH3zjp(resizedBuffer, `resize_${i}.jpg`, raw);
+        resizeUrl = await uploadBuffer73(resizedBuffer, `resize_${i}.jpg`, raw);
       }
 
       processedImages.push({ raw, original: originalUrl, resize: resizeUrl });
