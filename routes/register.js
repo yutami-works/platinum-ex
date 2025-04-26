@@ -9,19 +9,28 @@ const Partner = require('../models/Partner');
 const Image = require('../models/Image');
 
 // アップロード関数（fsを使わずbuffer対応）
-const uploadBufferToH3zjp = async (buffer, filename = 'upload.jpg') => {
+const uploadBufferToH3zjp = async (buffer, filename = 'upload.jpg', originalUrl) => {
+
+  let resultUrl;
+
   const formData = new FormData();
   formData.append('files', buffer, { filename });
 
-  const res = await axios.post('https://hm-nrm.h3z.jp/uploader/work.php', formData, {
-    headers: formData.getHeaders(),
-    maxContentLength: Infinity,
-    maxBodyLength: Infinity
-  });
+  try {
+    const res = await axios.post('https://hm-nrm.h3z.jp/uploader/work.php', formData, {
+      headers: formData.getHeaders(),
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity
+    });
+    resultUrl = res.data.files[0].url;
+    console.log(resultUrl);
+  } catch (error) {
+    console.log(error.response.status);
+    console.log('画像アップロード失敗。データを補正してください。');
+    resultUrl = originalUrl;
+  }
 
-  console.log(res.data.files[0].url);
-
-  return res.data.files[0].url;
+  return resultUrl;
 };
 
 // リサイズ
@@ -108,14 +117,14 @@ router.post('/', async (req, res) => {
       // original が空なら raw をアップロード
       if (!originalUrl) {
         const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
-        originalUrl = await uploadBufferToH3zjp(Buffer.from(data), `original_${i}.jpg`);
+        originalUrl = await uploadBufferToH3zjp(Buffer.from(data), `original_${i}.jpg`, raw);
       }
 
       // resize が空なら raw をリサイズ→アップロード
       if (!resizeUrl) {
         const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
         const resizedBuffer = await resizeToAspect(Buffer.from(data));
-        resizeUrl = await uploadBufferToH3zjp(resizedBuffer, `resize_${i}.jpg`);
+        resizeUrl = await uploadBufferToH3zjp(resizedBuffer, `resize_${i}.jpg`, raw);
       }
 
       processedImages.push({ raw, original: originalUrl, resize: resizeUrl });
