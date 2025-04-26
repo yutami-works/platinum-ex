@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const { checkRawOrgRszImages } = require('../utils/kyo2');
+
 const Partner = require('../models/Partner');
 const Image = require('../models/Image');
 
@@ -83,13 +85,14 @@ router.post('/edit/:hash', async (req, res) => {
 
   // Imageの更新（完全置換）
   if (req.body.images && Array.isArray(req.body.images)) {
+    const rawImages = req.body.images.map(img => img.raw);
+    const originalImages = req.body.images.map(img => img.original);
+    const resizeImages = req.body.images.map(img => img.resize);
+    const rawOrgRszImages = await checkRawOrgRszImages(rawImages, originalImages, resizeImages);
+
     await Image.updateOne({ hash }, {
         $set: {
-          images: req.body.images.map(img => ({
-            raw: img.raw,
-            original: img.original,
-            resize: img.resize
-          }))
+          images: rawOrgRszImages
         }
       },
       { upsert: true }
