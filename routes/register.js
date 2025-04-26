@@ -1,73 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const axios = require('axios');
-const sharp = require('sharp');
-const FormData = require('form-data');
-
-const { uploadBuffer73 } = require('../utils/73uploader')
+const { imageUrl73rror, imageUrl73rror34 } = require('../utils/mirror73');
 
 const Partner = require('../models/Partner');
 const Image = require('../models/Image');
-
-// アップロード関数（fsを使わずbuffer対応）
-const uploadBufferToH3zjp = async (buffer, filename = 'upload.jpg', originalUrl) => {
-
-  let resultUrl;
-
-  const formData = new FormData();
-  formData.append('files', buffer, { filename });
-
-  try {
-    const res = await axios.post('https://hm-nrm.h3z.jp/uploader/work.php', formData, {
-      headers: formData.getHeaders(),
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity
-    });
-    resultUrl = res.data.files[0].url;
-    console.log(resultUrl);
-  } catch (error) {
-    console.log(error.response.status);
-    console.log('画像アップロード失敗。データを補正してください。');
-    resultUrl = originalUrl;
-  }
-
-  return resultUrl;
-};
-
-// リサイズ
-const resizeToAspect = async (inputBuffer) => {
-  const targetAspectRatio = 3 / 4; // 目標アスペクト比 (例：3:4)
-
-  // 入力画像のサイズを取得
-  const metadata = await sharp(inputBuffer).metadata();
-  const { width, height } = metadata;
-
-  const currentAspectRatio = width / height;
-
-  let targetWidth, targetHeight;
-
-  if (currentAspectRatio > targetAspectRatio) {
-    // 横長 → 高さを基準に余白を追加
-    targetWidth = width;
-    targetHeight = Math.round(width / targetAspectRatio);
-  } else {
-    // 縦長 or 正方形 → 幅を基準に余白を追加
-    targetWidth = Math.round(height * targetAspectRatio);
-    targetHeight = height;
-  }
-
-  // 白背景で余白を追加してサイズ調整
-  const outputBuffer = await sharp(inputBuffer)
-    .resize(targetWidth, targetHeight, {
-      fit: 'contain',
-      background: { r: 255, g: 255, b: 255 },
-    })
-    .toBuffer();
-
-  console.log('リサイズ');
-  return outputBuffer;
-};
 
 // 登録画面
 router.get('/', (req, res) => {
@@ -79,33 +16,6 @@ router.post('/', async (req, res) => {
   const { hash, name, birth, tall, figure, job, from, live, status, rawImages, originalImages, resizeImages } = req.body;
 
   try {
-    // 画像をまとめて処理
-    /* 429になるので対策考える
-    const processedImages = await Promise.all(rawImages.map(async (raw, i) => {
-      const original = originalImages[i];
-      const resize = resizeImages[i];
-
-      let originalUrl = original;
-      let resizeUrl = resize;
-
-      // original が空なら raw をアップロード
-      if (!originalUrl) {
-        const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
-        originalUrl = await uploadBufferToH3zjp(Buffer.from(data), `original_${i}.jpg`);
-      }
-
-      // resize が空なら raw をリサイズ→アップロード
-      if (!resizeUrl) {
-        const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
-        const resizedBuffer = await resizeToAspect(Buffer.from(data));
-
-        resizeUrl = await uploadBufferToH3zjp(resizedBuffer, `resize_${i}.jpg`);
-      }
-
-      return { raw, original: originalUrl, resize: resizeUrl };
-    }));
-    */
-
     // 画像アップロード
     const processedImages = [];
     for (let i = 0; i < rawImages.length; i++) {
@@ -118,15 +28,12 @@ router.post('/', async (req, res) => {
 
       // original が空なら raw をアップロード
       if (!originalUrl) {
-        const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
-        originalUrl = await uploadBuffer73(Buffer.from(data), `original_${i}.jpg`, raw);
+        originalUrl = await imageUrl73rror(raw);
       }
 
       // resize が空なら raw をリサイズ→アップロード
       if (!resizeUrl) {
-        const { data } = await axios.get(raw, { responseType: 'arraybuffer' });
-        const resizedBuffer = await resizeToAspect(Buffer.from(data));
-        resizeUrl = await uploadBuffer73(resizedBuffer, `resize_${i}.jpg`, raw);
+        resizeUrl = await imageUrl73rror34(raw)
       }
 
       processedImages.push({ raw, original: originalUrl, resize: resizeUrl });
