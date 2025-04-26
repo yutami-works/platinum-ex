@@ -11,6 +11,11 @@ const checkRawOrgRszImages = async (rawImages, originalImages, resizeImages) => 
     let originalUrl = original;
     let resizeUrl = resize;
 
+    // 全ての項目が空欄の登録はスキップ
+    if (!raw && !originalUrl && !resizeUrl) {
+      continue
+    }
+
     // original が空なら raw をアップロード
     if (!originalUrl) {
       originalUrl = await imageUrl73rror(raw);
