@@ -10,7 +10,8 @@ const partnerSchema = new mongoose.Schema({
   from: String,
   live: String,
   connect: String,
-  delete: String
+  quit: String,
+  like: Number
 }, { collection: 'partners' });
 
 module.exports = mongoose.model('Partner', partnerSchema);

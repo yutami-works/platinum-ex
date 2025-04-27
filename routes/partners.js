@@ -51,9 +51,9 @@ router.get('/', async (req, res) => {
         }
 
         // 追加情報
-        if (partner.delete == '2') {
+        if (partner.quit == '2') {
           state = `${state}（解約不可）`;
-        } else if (partner.delete == '1') {
+        } else if (partner.quit == '1') {
           state = `${state}（予約不可）`;
         }
 
@@ -102,7 +102,7 @@ router.post('/edit/:hash', async (req, res) => {
       from: req.body.from,
       live: req.body.live,
       connect: req.body.connect,
-      delete: req.body.delete
+      quit: req.body.quit
     }
   });
 

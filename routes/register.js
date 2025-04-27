@@ -13,7 +13,9 @@ router.get('/', (req, res) => {
 
 // 登録処理
 router.post('/', async (req, res) => {
-  const { hash, name, birth, tall, figure, job, from, live, status, rawImages, originalImages, resizeImages } = req.body;
+  // 入力データ
+  const { hash, name, birth, tall, figure, job, from, live, connect, quit, rawImages, originalImages, resizeImages } = req.body;
+  const like = 0;
 
   try {
     // 画像アップロード
@@ -24,7 +26,7 @@ router.post('/', async (req, res) => {
 
     // Partner 登録
     console.log('partners登録');
-    const newPartner = new Partner({ hash, name, birth, tall, figure, job, from, live, status });
+    const newPartner = new Partner({ hash, name, birth, tall, figure, job, from, live, connect, quit, like});
     await newPartner.save();
 
     res.redirect('/register'); // 完了後の遷移先
