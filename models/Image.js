@@ -9,6 +9,6 @@ const imageSchema = new mongoose.Schema({
       resize: { type: String}
     }
   ]
-}, { collection: 'images' });
+}, { collection: 'images', timestamps: true });
 
 module.exports = mongoose.model('image', imageSchema);

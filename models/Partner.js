@@ -11,7 +11,11 @@ const partnerSchema = new mongoose.Schema({
   live: String,
   connect: String,
   quit: String,
-  like: Number
-}, { collection: 'partners' });
+  like: Number,
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  }
+}, { collection: 'partners', timestamps: true });
 
 module.exports = mongoose.model('Partner', partnerSchema);
