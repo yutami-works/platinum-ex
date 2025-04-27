@@ -51,8 +51,10 @@ router.get('/', async (req, res) => {
         }
 
         // 追加情報
-        if (partner.quit == '2') {
-          state = `${state}（解約不可）`;
+        if (partner.quit == '3') {
+          state = `${state}（制限解除）`;
+        } else if (partner.quit == '2') {
+          state = `${state}（解約制限）`;
         } else if (partner.quit == '1') {
           state = `${state}（予約不可）`;
         }
