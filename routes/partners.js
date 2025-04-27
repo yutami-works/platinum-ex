@@ -51,7 +51,9 @@ router.get('/', async (req, res) => {
         }
 
         // 追加情報
-        if (partner.quit == '3') {
+        if (partner.quit == '4') {
+          state = `${state}（長期休暇）`;
+        } else if (partner.quit == '3') {
           state = `${state}（制限解除）`;
         } else if (partner.quit == '2') {
           state = `${state}（解約制限）`;
