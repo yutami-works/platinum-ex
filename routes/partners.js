@@ -24,8 +24,8 @@ const calculateAge = (birthdate) => {
 /* GET users listing. */
 router.get('/', async (req, res) => {
   try {
-    // partnersを全取得
-    const partnersBaseData = await Partner.find({});
+    // partnersを全取得(like順)
+    const partnersBaseData = await Partner.find({}).sort({ like: -1 });;
 
     // 個別情報加工
     const partners = await Promise.all(
