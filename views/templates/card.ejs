@@ -9,7 +9,10 @@
     />
     <div class="card-body">
       <h5 class="card-title">
-        <a href="<%= partner.link %>" target="_blank" rel="noopener noreferrer">
+        <a href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          onclick="handleClickLike('<%= partner.hash %>', '<%= partner.link %>'); return false;">
           <%= partner.headerName %>
         </a>
       </h5>

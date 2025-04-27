@@ -19,7 +19,8 @@
     <div
       class="<%= `carousel-item ${index === 0 ? "active" : ""}` %>"
     >
-      <a href="<%= image.original %>" target="_blank" rel="noopener noreferrer">
+      <a href="#" target="_blank" rel="noopener noreferrer"
+        onclick="handleClickLike('<%= partner.hash %>', '<%= image.original %>'); return false;">
         <img
           src="<%= image.resize %>"
           class="d-block w-100 img-fluid img-thumbnail"

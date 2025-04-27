@@ -125,4 +125,16 @@ router.post('/edit/:hash', async (req, res) => {
   res.redirect('/partners'); // 一覧ページなどに戻す
 });
 
+// like加算エンドポイント
+router.post('/like/:hash', async (req, res) => {
+  try {
+    const { hash } = req.params;
+    await Partner.updateOne({ hash }, { $inc: { like: 1 } });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Like加算失敗', error);
+    res.status(500).json({ success: false });
+  }
+});
+
 module.exports = router;
