@@ -1,6 +1,8 @@
 const axios = require('axios');
 const FormData = require('form-data');
 
+const uploaderUrl = process.env.UPLOADER_URL;
+
 const uploadBuffer73 = async (buffer, filename, originalUrl) => {
 
   let resultUrl;
@@ -9,7 +11,7 @@ const uploadBuffer73 = async (buffer, filename, originalUrl) => {
   formData.append('files', buffer, { filename });
 
   try {
-    const res = await axios.post('https://hm-nrm.h3z.jp/uploader/work.php', formData, {
+    const res = await axios.post(uploaderUrl, formData, {
       headers: formData.getHeaders(),
       maxContentLength: Infinity,
       maxBodyLength: Infinity
