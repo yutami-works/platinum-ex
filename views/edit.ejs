@@ -22,7 +22,7 @@
         <div class="image-group">
           <label>Raw: <input type="text" name="images[<%= i %>][raw]" value="<%= img.raw %>" size="100"></label><br>
           <label>Original: <input type="text" name="images[<%= i %>][original]" value="<%= img.original === img.raw ? '' : img.original %>" size="100"></label><br>
-          <label>Resize: <input type="text" name="images[<%= i %>][resize]" value="<%= img.resize === img.raw ? '' : img.original %>" size="100"></label><br><br>
+          <label>Resize: <input type="text" name="images[<%= i %>][resize]" value="<%= img.resize === img.raw ? '' : img.resize %>" size="100"></label><br><br>
         </div>
       <% }) %>
     </div>
