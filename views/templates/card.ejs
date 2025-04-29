@@ -23,8 +23,42 @@
         <div class="card-text col-12"><a href="<%= `/partners/edit/${partner.hash}` %>">編集</a></div>
       </row>
     </div>
+    <%
+      // connect status
+      let connectStatus = '不明'
+      let badgeColor = 'bg-secondary';
+
+      if (partner.connect == '2') {
+        connectStatus = '契約済み';
+        badgeColor = 'bg-success';
+      } else if (partner.connect == '1') {
+        connectStatus = '契約準備';
+        badgeColor = 'bg-warning';
+      } else {
+        connectStatus = '待機中';
+        badgeColor = 'bg-primary';
+      }
+
+      // quit status
+      let quitStatus = ''
+      if (partner.quit == '4') {
+        quitStatus = '長期休暇';
+      } else if (partner.quit == '3') {
+        quitStatus = '制限解除';
+      } else if (partner.quit == '2') {
+        quitStatus = '解約制限';
+      } else if (partner.quit == '1') {
+        quitStatus = '予約不可';
+      }
+    %>
     <div class="card-footer text-center">
-      <small class="text-muted"><%= partner.status %></small>
+      <h5>
+        👑<%= partner.like %>
+        <span class="badge <%= badgeColor %>"><%= connectStatus %></span>
+        <% if (partner.quit != '0') { %>
+        <span class="badge bg-danger"><%= quitStatus %></span>
+        <% } %>
+      </h5>
     </div>
   </div>
   <!-- modal -->

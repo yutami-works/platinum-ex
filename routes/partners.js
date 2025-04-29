@@ -41,31 +41,9 @@ router.get('/', async (req, res) => {
         }
         const headerName = `${partner.name}(${age})`;
 
-        // 状態定義
-        let state = '不明';
-        if (partner.connect == '2') {
-          state = '契約済み';
-        } else if (partner.connect == '1') {
-          state = '契約準備';
-        } else {
-          state = '待機中';
-        }
-
-        // 追加情報
-        if (partner.quit == '4') {
-          state = `${state}（長期休暇）`;
-        } else if (partner.quit == '3') {
-          state = `${state}（制限解除）`;
-        } else if (partner.quit == '2') {
-          state = `${state}（解約制限）`;
-        } else if (partner.quit == '1') {
-          state = `${state}（予約不可）`;
-        }
-
         return {
           ...partner.toObject(),
           headerName: headerName,
-          status: state,
           images: image.images,
           link: process.env.PARTNER_URL + partner.hash,
           modal: `modal-${partner.hash}`,
