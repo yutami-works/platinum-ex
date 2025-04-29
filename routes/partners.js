@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { checkRawOrgRszImages } = require('../utils/kyo2');
+const { printImageUrlSize } = require('../utils/image2');
 
 const Partner = require('../models/Partner');
 const Image = require('../models/Image');
@@ -86,6 +87,19 @@ router.get('/edit/:hash', async (req, res) => {
   const hash = req.params.hash;
   const partner = await Partner.findOne({ hash });
   const image = await Image.findOne({ hash });
+
+  // debug
+  for (const img of image.images) {
+    if (img.raw) {
+      await printImageUrlSize(img.raw);
+    }
+    if (img.original) {
+      await printImageUrlSize(img.original);
+    }
+    if (img.resize) {
+      await printImageUrlSize(img.resize);
+    }
+  }
 
   if (!partner) return res.status(404).send('対象のデータが見つかりません');
 

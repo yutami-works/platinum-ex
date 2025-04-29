@@ -7,6 +7,14 @@ const imageUrl2buffer = async (url) => {
   return Buffer.from(data);
 };
 
+const printImageUrlSize = async (url) => {
+  const bufferData = await imageUrl2buffer(url);
+  const metadata = await sharp(bufferData).metadata();
+  const { width, height } = metadata;
+  console.log(`${width}x${height}：${url}`);
+  return
+}
+
 // アスペクト比調整 (3:4)
 const paddingImage34 = async (inputBuffer) => {
   const AspectRatio34 = 3 / 4;
@@ -37,4 +45,4 @@ const paddingImage34 = async (inputBuffer) => {
   return outputBuffer;
 };
 
-module.exports = { imageUrl2buffer, paddingImage34 };
+module.exports = { imageUrl2buffer, printImageUrlSize, paddingImage34 };
