@@ -1,15 +1,13 @@
 // モジュール読み込み
-const fs = require('node:fs');
-const path = require('node:path');
 const puppeteer = require('puppeteer');
 const dotenv = require('dotenv');
+const { updateCookies } = require('./kyo3');
 
 // 環境変数読み込み
 dotenv.config();
 const url = process.env.PARTNER_URL;
 
 // path定義
-const cookiesPath = path.join(__dirname, './data/cookies.json');
 const waitMs = 60000;
 
 (async () => {
@@ -22,7 +20,7 @@ const waitMs = 60000;
 
   // cookieを保存
   const cookies = await page.cookies();
-  fs.writeFileSync(cookiesPath, JSON.stringify(cookies, null, 2));
+  updateCookies(cookies);
 
   await browser.close();
 })();
