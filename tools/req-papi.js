@@ -53,7 +53,7 @@ const createHeaders = () => {
 const headers = createHeaders();
 
 // GET解析用
-const getTest = async (url, headers) => {
+const getTest = async (url) => {
   let res;
   try {
     res = await axios.get(url, { headers });
@@ -66,29 +66,31 @@ const getTest = async (url, headers) => {
 }
 
 // IDからユーザー情報をGET
-const getUserInfo = async (id, headers) => {
-  let res;
+const getUserInfo = async (id) => {
+  let data;
   const url = EpPusr + id;
   try {
-    res = await axios.get(url, { headers });
-    console.log(res.data);
+    const res = await axios.get(url, { headers });
+    data = res.data;
   } catch (error) {
     console.error(`Failed to get user info:`, error.message);
+    data = error.response.data;
   }
-  return res.data;
+  return data;
 }
 
 // IDから似ているユーザー情報をGET
-const getSimilarUserInfo = async (id, headers) => {
-  let res;
+const getSimilarUserInfo = async (id) => {
+  let data;
   const url = EpPsmlr + id;
   try {
-    res = await axios.get(url, { headers });
-    console.log(res.data);
+    const res = await axios.get(url, { headers });
+    data = res.data;
   } catch (error) {
-    console.error(`Failed to get user info:`, error.message);
+    console.error(`Failed to get similar user info:`, error.message);
+    data = error.response.data;
   }
-  return res.data;
+  return data;
 }
 
 // 検索からIDをGET
@@ -130,4 +132,4 @@ const footPrint = async (id) => {
   }
 }
 
-module.exports = { fetchIds, footPrint };
+module.exports = { getUserInfo, getSimilarUserInfo,fetchIds, footPrint };
