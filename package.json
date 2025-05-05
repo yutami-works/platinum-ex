@@ -17,6 +17,7 @@
     "http-errors": "~1.6.3",
     "mongoose": "^8.12.0",
     "morgan": "~1.9.1",
+    "puppeteer": "^24.8.0",
     "sharp": "^0.34.1"
   }
 }
