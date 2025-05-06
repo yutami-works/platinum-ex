@@ -34,6 +34,16 @@ router.get('/', async (req, res) => {
         // hashを基にimagesデータを取得
         const image = await Image.findOne({ hash: partner.hash });
 
+        if (image.images.length === 0) {
+          image.images = [
+            {
+              raw: '',
+              original: '',
+              resize: ''
+            }
+          ];
+        }
+
         // 年齢計算
         let age = '??';
         if (partner.birth) {
