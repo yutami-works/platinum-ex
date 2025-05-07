@@ -19,6 +19,7 @@ const uploadBuffer73 = async (buffer, filename, originalUrl) => {
     resultUrl = res.data.files[0].url;
     console.log(`画像アップロード成功：${resultUrl}`);
   } catch (error) {
+    const status = error.response?.status || 'No response';
     console.warn(`画像アップロード失敗：${error.response.status}`);
     // 失敗したら元のURLを返却する
     resultUrl = originalUrl;
