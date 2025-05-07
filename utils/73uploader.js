@@ -20,7 +20,8 @@ const uploadBuffer73 = async (buffer, filename, originalUrl) => {
     console.log(`画像アップロード成功：${resultUrl}`);
   } catch (error) {
     const status = error.response?.status || 'No response';
-    console.warn(`画像アップロード失敗：${error.response.status}`);
+    console.warn(`画像アップロード失敗：${status}`);
+    console.warn('画像アップロード失敗詳細:', error.message);
     // 失敗したら元のURLを返却する
     resultUrl = originalUrl;
   }
