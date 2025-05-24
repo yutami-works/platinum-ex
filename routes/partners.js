@@ -31,19 +31,6 @@ router.get('/', async (req, res) => {
     // 個別情報加工
     const partners = await Promise.all(
       partnersBaseData.map(async (partner) => {
-        // hashを基にimagesデータを取得
-        const image = await Image.findOne({ hash: partner.hash });
-
-        if (image.images.length === 0) {
-          image.images = [
-            {
-              raw: '',
-              original: '',
-              resize: ''
-            }
-          ];
-        }
-
         // 年齢計算
         let age = '??';
         if (partner.birth) {
@@ -54,7 +41,6 @@ router.get('/', async (req, res) => {
         return {
           ...partner.toObject(),
           headerName: headerName,
-          images: image.images,
           link: process.env.PARTNER_URL + partner.hash,
           modal: `modal-${partner.hash}`,
           carousel: `carousel-${partner.hash}`
@@ -74,10 +60,9 @@ router.get('/', async (req, res) => {
 router.get('/edit/:hash', async (req, res) => {
   const hash = req.params.hash;
   const partner = await Partner.findOne({ hash });
-  const image = await Image.findOne({ hash });
 
   // debug
-  for (const img of image.images) {
+  for (const img of partner.images) {
     if (img.raw) {
       await printImageUrlSize(img.raw);
     }
@@ -91,7 +76,7 @@ router.get('/edit/:hash', async (req, res) => {
 
   if (!partner) return res.status(404).send('対象のデータが見つかりません');
 
-  res.render('edit', { partner, image });
+  res.render('edit', { partner});
 });
 
 // 更新処理
@@ -100,15 +85,21 @@ router.post('/edit/:hash', async (req, res) => {
 
   await Partner.updateOne({ hash }, {
     $set: {
+      partnerNumber: req.body.partnerNumber,
       name: req.body.name,
-      birth: req.body.birth,
-      tall: req.body.tall,
+      birth: req.body.birth ? new Date(req.body.birth) : null,
+      height: req.body.height,
       figure: req.body.figure,
       job: req.body.job,
       from: req.body.from,
       live: req.body.live,
-      connect: req.body.connect,
-      quit: req.body.quit
+      blood: req.body.blood,
+      horoscope: req.body.horoscope,
+      quit: req.body.quit  === 'on',
+      private: req.body.private  === 'on',
+      negotiate: req.body.negotiate  === 'on',
+      connect: req.body.connect  === 'on',
+      like: req.body.like,
     }
   });
 
@@ -119,7 +110,7 @@ router.post('/edit/:hash', async (req, res) => {
     const resizeImages = req.body.images.map(img => img.resize);
     const rawOrgRszImages = await checkRawOrgRszImages(rawImages, originalImages, resizeImages);
 
-    await Image.updateOne({ hash }, {
+    await Partner.updateOne({ hash }, {
         $set: {
           images: rawOrgRszImages
         }
