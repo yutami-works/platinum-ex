@@ -21,7 +21,7 @@
     <label>隠密: <input type="checkbox" name="private" <%= partner.private ? 'checked' : '' %>></label><br>
     <label>交渉: <input type="checkbox" name="negotiate" <%= partner.negotiate ? 'checked' : '' %>></label><br>
     <label>契約: <input type="checkbox" name="connect" <%= partner.connect ? 'checked' : '' %>></label><br>
-    <label>レート: <input type="text" name="like" value="<%= partner.like || '' %>"></label><br>
+    <label>レート: <input type="text" name="like" value="<%= typeof partner.like !== 'undefined' ? partner.like : '' %>"></label><br>
 
     <h3>画像情報</h3>
     <div id="image-fields">
