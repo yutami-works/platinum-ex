@@ -52,7 +52,7 @@
       <h5>
         👑<%= partner.like %>
         <span class="badge <%= badgeColor %>"><%= connectStatus %></span>
-        <% if (partner.quit != '0') { %>
+        <% if (quitStatus != '') { %>
         <span class="badge bg-danger"><%= quitStatus %></span>
         <% } %>
       </h5>
