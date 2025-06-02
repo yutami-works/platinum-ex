@@ -17,7 +17,7 @@
         </a>
       </h5>
       <row>
-        <div class="card-text col-12">身長：<%= partner.tall %>cm</div>
+        <div class="card-text col-12">身長：<%= partner.height %>cm</div>
         <div class="card-text col-12">体型：<%= partner.figure %></div>
         <div class="card-text col-12">最終勤務：<%= partner.updatedAt.toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) %></div>
         <div class="card-text col-12"><a href="<%= `/partners/edit/${partner.hash}` %>">編集</a></div>
