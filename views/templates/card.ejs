@@ -28,10 +28,10 @@
       let connectStatus = '不明'
       let badgeColor = 'bg-secondary';
 
-      if (partner.connect == '2') {
+      if (partner.connect) {
         connectStatus = '契約済み';
         badgeColor = 'bg-success';
-      } else if (partner.connect == '1') {
+      } else if (partner.negotiate) {
         connectStatus = '契約準備';
         badgeColor = 'bg-warning';
       } else {
@@ -41,13 +41,9 @@
 
       // quit status
       let quitStatus = ''
-      if (partner.quit == '4') {
+      if (partner.private) {
         quitStatus = '長期休暇';
-      } else if (partner.quit == '3') {
-        quitStatus = '制限解除';
-      } else if (partner.quit == '2') {
-        quitStatus = '解約制限';
-      } else if (partner.quit == '1') {
+      } else if (partner.quit) {
         quitStatus = '予約不可';
       }
     %>
