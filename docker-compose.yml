@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  # アプリケーションのサービス定義
+  app:
+    # サービス名
+    container_name: platinum-ex
+
+    # 上記で作成したDockerfileを使ってイメージをビルド
+    build: .
+
+    # ポートマッピング: ホストPCのポート:コンテナ内部のポート
+    # これにより、ホストPCの http://localhost:3000 からアクセス可能になります
+    ports:
+      - "3000:3000"
+
+    # 環境変数の設定
+    # MongoDB Atlasの接続文字列などをここに記述します
+    environment:
+      # 環境変数ファイル (.env) を使用する場合は env_file: を使用してもOK
+      NODE_ENV: development
+      MONGODB_URI: "mongodb+srv://<USERNAME>:<PASSWORD>@<CLUSTER-URL>/<DB-NAME>?retryWrites=true&w=majority"
+
+    command: npm run dev
+
+    # ボリュームマッピング (開発において重要！)
+    # ホストPCの現在のディレクトリの内容を、コンテナ内部の /usr/src/app に同期させます
+    # これにより、ホストPCでコードを変更すると、コンテナ内のファイルも自動的に更新されます
+    # (ただし、nodemonなどのツールでホットリロードの仕組みが必要です)
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    # 実行が停止しても自動で再起動する設定 (開発中は optional)
+    restart: always
